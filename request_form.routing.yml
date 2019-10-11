@@ -1,0 +1,8 @@
+request_form.form:
+  path: '/dt-request-form'
+  defaults:
+    _title: 'Get Started'
+    _form: '\Drupal\request_form\Form\RequestForm'
+  requirements:
+    _permission: 'access content'
+    _custom_access: '\Drupal\request_form\Controller\RequestFormController::access'
