@@ -6,3 +6,11 @@ request_form.form:
   requirements:
     _permission: 'access content'
     _custom_access: '\Drupal\request_form\Controller\RequestFormController::access'
+
+request_form.email.settings:
+  path: '/admin/structure/request_form/settings'
+  defaults:
+    _form: '\Drupal\request_form\Form\EmailSettings'
+    _title: 'Email settings for Request Form'
+  requirements:
+    _permission: 'administer site configuration'

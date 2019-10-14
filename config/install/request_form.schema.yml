@@ -1,0 +1,6 @@
+request_form email:
+  type: config_object
+  mapping:
+    email_setting:
+      type: email
+      label: 'Email setting'

@@ -80,9 +80,18 @@ class RequestForm extends FormBase {
 		if(!$this->validate_phone_number($form_state->getValue('phone'))){
 			$form_state->setErrorByName('phone', $this->t('Enter valid phone number'));
 		}
+
+		if(!filter_var($form_state->getValue('email_setting'), FILTER_VALIDATE_EMAIL)){
+			$form_state->setErrorByName('email_setting', $this->t('Enter valid email'));
+		}
 	}
 
 	public function submitForm(array &$form, FormStateInterface $form_state){
+
+		if(!$this->send_mail()) {
+			drupal_set_message(t('No mail has been sent'));
+		}
+		else drupal_set_message(t('Mail has been sent'));
 
 	}
 
@@ -94,5 +103,24 @@ class RequestForm extends FormBase {
 			return false;
 		}
 		return true;
+	}
+
+	public function send_mail(){
+
+		$config = $this->config('request_form.email');
+		$mail = $config->get('email_setting');
+		$mailManager = \Drupal::service('plugin.manager.mail');
+		$module = 'request_form';
+		$key = 'submit';
+		$to = $mail;
+		$params['message'] = 'New Get Started query';
+		$langcode = 'en';
+		$send = true;
+		$result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
+
+		if($result['result'] == true) {
+			return true;
+		}
+		else return false;
 	}
 }

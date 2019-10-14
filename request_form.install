@@ -1,0 +1,16 @@
+<?php
+
+
+use Drupal\Core\Config\ConfigFactory;
+
+/**
+ * Implements hook_install().
+ */
+function request_form_install() {
+
+  // Set default values for config which require dynamic values.
+
+  \Drupal::configFactory()->getEditable('request_form.email')
+    ->set('email_setting', \Drupal::config('system.site')->get('mail'))
+    ->save();
+}
