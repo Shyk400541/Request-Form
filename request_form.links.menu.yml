@@ -4,3 +4,9 @@ request_form.menu:
   parent: main
   route_name: request_form.form
   menu_name: main
+
+request_form.settings:
+  title: 'Request Form settings'
+  description: 'Changing a recipient email'
+  parent: system.admin_structure
+  route_name: request_form.email.settings
