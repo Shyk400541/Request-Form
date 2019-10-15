@@ -81,8 +81,8 @@ class RequestForm extends FormBase {
 			$form_state->setErrorByName('phone', $this->t('Enter valid phone number'));
 		}
 
-		if(!filter_var($form_state->getValue('email_setting'), FILTER_VALIDATE_EMAIL)){
-			$form_state->setErrorByName('email_setting', $this->t('Enter valid email'));
+		if(!filter_var($form_state->getValue('email'), FILTER_VALIDATE_EMAIL)){
+			$form_state->setErrorByName('email', $this->t('Enter valid email'));
 		}
 	}
 
@@ -93,6 +93,10 @@ class RequestForm extends FormBase {
 		}
 		else drupal_set_message(t('Mail has been sent'));
 
+		$node = $this->create_node($form_state);
+		if(!$this->save_node($node)){
+			drupal_set_message(t('Error with saving submission'), 'error');
+		}
 	}
 
 	public function validate_phone_number($phone){
@@ -122,5 +126,42 @@ class RequestForm extends FormBase {
 			return true;
 		}
 		else return false;
+	}
+
+	public function create_node(FormStateInterface $form_state) {
+
+		$key = $form_state->getValue('employees');
+
+		switch ($key) {
+			case '0':
+				$employees = '10';
+				break;
+			case '1':
+				$employees = '20';
+				break;
+			case '2':
+				$employees = '<20';
+				break;
+		}
+
+		$node = \Drupal::entityTypeManager()->getStorage('node')->create([
+			'type' => 'rf_submissions',
+			'title' => 'Submission',
+			'field_city' => $form_state->getValue('city'),
+			'field_count_of_employees' => $employees,
+			'field_email' => $form_state->getValue('email'),
+			'field_name' => $form_state->getValue('name'),
+			'field_organization' => $form_state->getValue('organization'),
+			'field_phone' => $form_state->getValue('phone'),
+			]);
+		return $node;
+	}
+
+	public function save_node($node){
+
+		if(!$node->save()){
+			return false;
+		}
+		return true;
 	}
 }
